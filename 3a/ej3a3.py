@@ -29,10 +29,14 @@ def conectar_bd() -> sqlite3.Connection:
     """
     # Implementa aquí la conexión a la base de datos:
     # 1. Verifica que el archivo de base de datos existe
+    if not os.path.exists(DB_PATH):
+        raise FileNotFoundError(f"La base de datos no existe.")
     # 2. Conecta a la base de datos
+    conexion = sqlite3.connect(DB_PATH)
     # 3. Configura la conexión para que devuelva las filas como diccionarios (opcional)
+    conexion.row_factory = sqlite3.Row
     # 4. Retorna la conexión
-    pass
+    return conexion
 
 def convertir_a_json(conexion: sqlite3.Connection) -> Dict[str, List[Dict[str, Any]]]:
     """
@@ -47,14 +51,35 @@ def convertir_a_json(conexion: sqlite3.Connection) -> Dict[str, List[Dict[str, A
     """
     # Implementa aquí la conversión de datos a formato JSON:
     # 1. Crea un diccionario vacío para almacenar el resultado
+    results = {}
+    tables_list = []
+
     # 2. Obtén la lista de tablas de la base de datos
+    cursor = conexion.cursor()
+    consulta_nombre_tablas = ("""
+                SELECT name
+                FROM sqlite_master
+                WHERE type="table"
+                """)
+    cursor.execute(consulta_nombre_tablas)
+    tables = cursor.fetchall()
+
+    for table in tables:
+        tables_list.append(table[0])
     # 3. Para cada tabla:
     #    a. Ejecuta una consulta SELECT * FROM tabla
+    for table in tables_list:
+        consulta = f"SELECT * FROM {table}"
+        cursor.execute(consulta)
     #    b. Obtén los nombres de las columnas
+        columns_name = [descripcion[0] for descripcion in cursor.description]
     #    c. Convierte cada fila a un diccionario (clave: nombre columna, valor: valor celda)
+        rows = cursor.fetchall()
+        rows_list = [dict(row) for row in rows]
     #    d. Añade el diccionario a una lista para esa tabla
+        results[table] = rows_list
     # 4. Retorna el diccionario completo con todas las tablas
-    pass
+    return results
 
 def convertir_a_dataframes(conexion: sqlite3.Connection) -> Dict[str, pd.DataFrame]:
     """
@@ -69,14 +94,62 @@ def convertir_a_dataframes(conexion: sqlite3.Connection) -> Dict[str, pd.DataFra
     """
     # Implementa aquí la extracción de datos a DataFrames:
     # 1. Crea un diccionario vacío para los DataFrames
+    df_dict = {}
     # 2. Obtén la lista de tablas de la base de datos
+    tables_list = []
+    cursor = conexion.cursor()
+    consulta_nombre_tablas = ("""
+                SELECT name
+                FROM sqlite_master
+                WHERE type="table"
+                """)
+    cursor.execute(consulta_nombre_tablas)
+    tables = cursor.fetchall()
+    for table in tables:
+        tables_list.append(table[0])
     # 3. Para cada tabla, crea un DataFrame usando pd.read_sql_query
+    for table in tables_list:
+        df_table = pd.read_sql_query(f"SELECT * FROM {table}", conexion)
+        df_dict[table] = df_table
     # 4. Añade consultas JOIN para relaciones importantes:
     #    - Ventas con información de productos
+    # Creamos la consulta JOIN
+    ventas_productos = ( """
+    SELECT  productos.nombre, productos.categoria, productos.precio_unitario, ventas.fecha, ventas.vendedor_id, ventas.cantidad
+    FROM productos
+    JOIN ventas ON productos.id = ventas.producto_id
+    """
+    )
+    # Creamos el df con los resultados
+    df_ventas_productos = pd.read_sql_query(ventas_productos, conexion)
+    # Añadimos al diccionario
+    df_dict[ventas_productos] = df_ventas_productos
     #    - Ventas con información de vendedores
+    # Creamos la consulta JOIN
+    ventas_vendedores = ( """
+    SELECT  vendedores.nombre, vendedores.apellido, vendedores.fecha_contratacion, ventas.fecha, ventas.vendedor_id, ventas.cantidad
+    FROM vendedores
+    JOIN ventas ON vendedores.id = ventas.vendedor_id
+    """
+    )
+    # Creamos el df con los resultados
+    df_ventas_vendedores = pd.read_sql_query(ventas_vendedores, conexion)
+    # Añadimos al diccionario
+    df_dict[ventas_vendedores] = df_ventas_vendedores
     #    - Vendedores con regiones
+    # Creamos la consulta JOIN
+    vendedores_regiones = ( """
+    SELECT  vendedores.id, vendedores.nombre, vendedores.apellido, vendedores.fecha_contratacion, regiones.id, regiones.nombre, regiones.pais
+    FROM vendedores
+    JOIN regiones ON regiones.id = vendedores.region_id
+    """
+    )
+    # Creamos el df con los resultados
+    df_vendedores_regiones = pd.read_sql_query(vendedores_regiones, conexion)
+    # Añadimos al diccionario
+    df_dict[vendedores_regiones] = df_vendedores_regiones
     # 5. Retorna el diccionario con todos los DataFrames
-    pass
+    return df_dict
 
 if __name__ == "__main__":
     try:
@@ -103,10 +176,10 @@ if __name__ == "__main__":
                 print(f"Primer registro: {datos_json[primera_tabla][0]}")
 
             # Opcional: guardar los datos en un archivo JSON
-            # ruta_json = os.path.join(os.path.dirname(__file__), 'ventas_comerciales.json')
-            # with open(ruta_json, 'w', encoding='utf-8') as f:
-            #     json.dump(datos_json, f, ensure_ascii=False, indent=2)
-            # print(f"Datos guardados en {ruta_json}")
+            ruta_json = os.path.join(os.path.dirname(__file__), 'ventas_comerciales.json')
+            with open(ruta_json, 'w', encoding='utf-8') as f:
+                json.dump(datos_json, f, ensure_ascii=False, indent=2)
+            print(f"Datos guardados en {ruta_json}")
 
         # Conversión a DataFrames de pandas
         print("\n--- Convertir datos a DataFrames de pandas ---")

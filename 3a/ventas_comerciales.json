@@ -1,0 +1,375 @@
+{
+  "regiones": [
+    {
+      "id": 1,
+      "nombre": "Norte",
+      "pais": "España"
+    },
+    {
+      "id": 2,
+      "nombre": "Sur",
+      "pais": "España"
+    },
+    {
+      "id": 3,
+      "nombre": "Este",
+      "pais": "España"
+    },
+    {
+      "id": 4,
+      "nombre": "Oeste",
+      "pais": "España"
+    },
+    {
+      "id": 5,
+      "nombre": "Centro",
+      "pais": "España"
+    }
+  ],
+  "vendedores": [
+    {
+      "id": 1,
+      "nombre": "María",
+      "apellido": "López",
+      "region_id": 1,
+      "fecha_contratacion": "2020-03-15"
+    },
+    {
+      "id": 2,
+      "nombre": "Juan",
+      "apellido": "García",
+      "region_id": 1,
+      "fecha_contratacion": "2019-05-20"
+    },
+    {
+      "id": 3,
+      "nombre": "Carlos",
+      "apellido": "Martínez",
+      "region_id": 2,
+      "fecha_contratacion": "2021-01-10"
+    },
+    {
+      "id": 4,
+      "nombre": "Laura",
+      "apellido": "Rodríguez",
+      "region_id": 3,
+      "fecha_contratacion": "2020-11-05"
+    },
+    {
+      "id": 5,
+      "nombre": "Ana",
+      "apellido": "Sánchez",
+      "region_id": 4,
+      "fecha_contratacion": "2022-02-28"
+    },
+    {
+      "id": 6,
+      "nombre": "Pablo",
+      "apellido": "Fernández",
+      "region_id": 5,
+      "fecha_contratacion": "2021-07-14"
+    },
+    {
+      "id": 7,
+      "nombre": "Lucía",
+      "apellido": "Díaz",
+      "region_id": 3,
+      "fecha_contratacion": "2020-04-22"
+    },
+    {
+      "id": 8,
+      "nombre": "Miguel",
+      "apellido": "Hernández",
+      "region_id": 2,
+      "fecha_contratacion": "2022-03-01"
+    }
+  ],
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Laptop Pro",
+      "categoria": "Electrónica",
+      "precio_unitario": 1200
+    },
+    {
+      "id": 2,
+      "nombre": "Teléfono Smart",
+      "categoria": "Electrónica",
+      "precio_unitario": 800
+    },
+    {
+      "id": 3,
+      "nombre": "Tablet Ultra",
+      "categoria": "Electrónica",
+      "precio_unitario": 500
+    },
+    {
+      "id": 4,
+      "nombre": "Monitor 24\"",
+      "categoria": "Periféricos",
+      "precio_unitario": 200
+    },
+    {
+      "id": 5,
+      "nombre": "Teclado Mecánico",
+      "categoria": "Periféricos",
+      "precio_unitario": 80
+    },
+    {
+      "id": 6,
+      "nombre": "Ratón Inalámbrico",
+      "categoria": "Periféricos",
+      "precio_unitario": 30
+    },
+    {
+      "id": 7,
+      "nombre": "Software Productividad",
+      "categoria": "Software",
+      "precio_unitario": 150
+    },
+    {
+      "id": 8,
+      "nombre": "Antivirus Premium",
+      "categoria": "Software",
+      "precio_unitario": 70
+    },
+    {
+      "id": 9,
+      "nombre": "Juego Aventura",
+      "categoria": "Software",
+      "precio_unitario": 60
+    },
+    {
+      "id": 10,
+      "nombre": "Disco Duro Externo",
+      "categoria": "Almacenamiento",
+      "precio_unitario": 120
+    }
+  ],
+  "ventas": [
+    {
+      "id": 1,
+      "fecha": "2022-01-05",
+      "vendedor_id": 1,
+      "producto_id": 1,
+      "cantidad": 3
+    },
+    {
+      "id": 2,
+      "fecha": "2022-01-10",
+      "vendedor_id": 2,
+      "producto_id": 3,
+      "cantidad": 2
+    },
+    {
+      "id": 3,
+      "fecha": "2022-01-15",
+      "vendedor_id": 3,
+      "producto_id": 2,
+      "cantidad": 4
+    },
+    {
+      "id": 4,
+      "fecha": "2022-01-20",
+      "vendedor_id": 4,
+      "producto_id": 5,
+      "cantidad": 5
+    },
+    {
+      "id": 5,
+      "fecha": "2022-01-25",
+      "vendedor_id": 5,
+      "producto_id": 4,
+      "cantidad": 2
+    },
+    {
+      "id": 6,
+      "fecha": "2022-02-03",
+      "vendedor_id": 6,
+      "producto_id": 6,
+      "cantidad": 10
+    },
+    {
+      "id": 7,
+      "fecha": "2022-02-08",
+      "vendedor_id": 7,
+      "producto_id": 7,
+      "cantidad": 3
+    },
+    {
+      "id": 8,
+      "fecha": "2022-02-14",
+      "vendedor_id": 8,
+      "producto_id": 8,
+      "cantidad": 7
+    },
+    {
+      "id": 9,
+      "fecha": "2022-02-19",
+      "vendedor_id": 1,
+      "producto_id": 9,
+      "cantidad": 5
+    },
+    {
+      "id": 10,
+      "fecha": "2022-02-24",
+      "vendedor_id": 2,
+      "producto_id": 10,
+      "cantidad": 2
+    },
+    {
+      "id": 11,
+      "fecha": "2022-03-02",
+      "vendedor_id": 3,
+      "producto_id": 1,
+      "cantidad": 1
+    },
+    {
+      "id": 12,
+      "fecha": "2022-03-07",
+      "vendedor_id": 4,
+      "producto_id": 2,
+      "cantidad": 3
+    },
+    {
+      "id": 13,
+      "fecha": "2022-03-12",
+      "vendedor_id": 5,
+      "producto_id": 3,
+      "cantidad": 4
+    },
+    {
+      "id": 14,
+      "fecha": "2022-03-18",
+      "vendedor_id": 6,
+      "producto_id": 4,
+      "cantidad": 2
+    },
+    {
+      "id": 15,
+      "fecha": "2022-03-23",
+      "vendedor_id": 7,
+      "producto_id": 5,
+      "cantidad": 1
+    },
+    {
+      "id": 16,
+      "fecha": "2022-03-28",
+      "vendedor_id": 8,
+      "producto_id": 6,
+      "cantidad": 3
+    },
+    {
+      "id": 17,
+      "fecha": "2022-04-04",
+      "vendedor_id": 1,
+      "producto_id": 7,
+      "cantidad": 2
+    },
+    {
+      "id": 18,
+      "fecha": "2022-04-09",
+      "vendedor_id": 2,
+      "producto_id": 8,
+      "cantidad": 1
+    },
+    {
+      "id": 19,
+      "fecha": "2022-04-15",
+      "vendedor_id": 3,
+      "producto_id": 9,
+      "cantidad": 3
+    },
+    {
+      "id": 20,
+      "fecha": "2022-04-21",
+      "vendedor_id": 4,
+      "producto_id": 10,
+      "cantidad": 4
+    },
+    {
+      "id": 21,
+      "fecha": "2022-04-26",
+      "vendedor_id": 5,
+      "producto_id": 1,
+      "cantidad": 2
+    },
+    {
+      "id": 22,
+      "fecha": "2022-05-02",
+      "vendedor_id": 6,
+      "producto_id": 2,
+      "cantidad": 5
+    },
+    {
+      "id": 23,
+      "fecha": "2022-05-08",
+      "vendedor_id": 7,
+      "producto_id": 3,
+      "cantidad": 3
+    },
+    {
+      "id": 24,
+      "fecha": "2022-05-13",
+      "vendedor_id": 8,
+      "producto_id": 4,
+      "cantidad": 1
+    },
+    {
+      "id": 25,
+      "fecha": "2022-05-19",
+      "vendedor_id": 1,
+      "producto_id": 5,
+      "cantidad": 6
+    },
+    {
+      "id": 26,
+      "fecha": "2022-05-24",
+      "vendedor_id": 2,
+      "producto_id": 6,
+      "cantidad": 4
+    },
+    {
+      "id": 27,
+      "fecha": "2022-05-30",
+      "vendedor_id": 3,
+      "producto_id": 7,
+      "cantidad": 2
+    },
+    {
+      "id": 28,
+      "fecha": "2022-06-05",
+      "vendedor_id": 4,
+      "producto_id": 8,
+      "cantidad": 3
+    },
+    {
+      "id": 29,
+      "fecha": "2022-06-10",
+      "vendedor_id": 5,
+      "producto_id": 9,
+      "cantidad": 2
+    },
+    {
+      "id": 30,
+      "fecha": "2022-06-16",
+      "vendedor_id": 6,
+      "producto_id": 10,
+      "cantidad": 1
+    },
+    {
+      "id": 31,
+      "fecha": "2022-06-21",
+      "vendedor_id": 7,
+      "producto_id": 1,
+      "cantidad": 4
+    },
+    {
+      "id": 32,
+      "fecha": "2022-06-27",
+      "vendedor_id": 8,
+      "producto_id": 2,
+      "cantidad": 3
+    }
+  ]
+}
