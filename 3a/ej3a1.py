@@ -25,7 +25,10 @@ def crear_conexion():
     Crea y devuelve una conexión a la base de datos SQLite
     """
     # Implementa la creación de la conexión y retorna el objeto conexión
-    pass
+
+    # Conectamos a la base de datos en memoria
+    conexion = sqlite3.connect(DB_PATH)
+    return conexion
 
 def crear_tablas(conexion):
     """
@@ -36,7 +39,34 @@ def crear_tablas(conexion):
     """
     # Implementa la creación de tablas usando SQL
     # Usa conexion.cursor() para crear un cursor y ejecutar comandos SQL
-    pass
+    
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    # Sentencia SQL para crear la tabla 'autores'
+    # Se usa IF NOT EXISTS para evitar un error si la tabla ya existe
+    crear_tabla_sql = """
+    CREATE TABLE IF NOT EXISTS autores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL
+    )
+    """
+    # Ejecuta la sentencia SQL
+    cursor.execute(crear_tabla_sql)
+    
+    # Creamos la tabla 'libros'
+    crear_tabla_sql = """
+    CREATE TABLE IF NOT EXISTS libros (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titulo TEXT NOT NULL,
+    anio INTEGER,
+    autor_id INTEGER,
+    FOREIGN KEY (autor_id) REFERENCES autores(id) 
+    )
+    """
+    # Ejecutamos la sentencia SQL
+    cursor.execute(crear_tabla_sql)
+    # Confirmamos y guardamos los cambios
+    conexion.commit()
 
 def insertar_autores(conexion, autores):
     """
@@ -45,7 +75,11 @@ def insertar_autores(conexion, autores):
     """
     # Implementa la inserción de autores usando SQL INSERT
     # Usa consultas parametrizadas para mayor seguridad
-    pass
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()   
+    cursor.executemany('INSERT INTO autores (nombre) VALUES (?)', autores)
+    # Confirmamos y guardamos los cambios
+    conexion.commit()
 
 def insertar_libros(conexion, libros):
     """
@@ -54,7 +88,11 @@ def insertar_libros(conexion, libros):
     """
     # Implementa la inserción de libros usando SQL INSERT
     # Usa consultas parametrizadas para mayor seguridad
-    pass
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()    
+    cursor.executemany('INSERT INTO libros (titulo, anio, autor_id) VALUES (?, ?, ?)', libros)
+    # Confirmamos y guardamos los cambios
+    conexion.commit()
 
 def consultar_libros(conexion):
     """
@@ -62,15 +100,49 @@ def consultar_libros(conexion):
     """
     # Implementa una consulta SQL JOIN para obtener libros con sus autores
     # Imprime los resultados formateados
-    pass
-
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    # Creamos la consulta JOIN
+    consultar_libros = ( """
+    SELECT  libros.titulo, libros.anio, autores.nombre
+    FROM autores
+    JOIN libros ON autores.id = libros.autor_id
+    """
+    )
+    # Ejecutamos la sentencia SQL
+    cursor.execute(consultar_libros)
+    # Obtenemos todos los resultados
+    resultados = cursor.fetchall()
+    # Imprimimos los resultados formateados 
+    if resultados:
+        for fila in resultados:
+            titulo, anio, autor = fila
+            print(f' Titulo: {titulo} | Año: {anio} | Autor: {autor}')
+    
 def buscar_libros_por_autor(conexion, nombre_autor):
     """
     Busca libros por el nombre del autor
     """
     # Implementa una consulta SQL con WHERE para filtrar por autor
     # Retorna una lista de tuplas (titulo, anio)
-    pass
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    # Construimos la consulta INNER JOIN - WHERE
+    consulta = ( """
+    SELECT libros.titulo, libros.anio
+    FROM autores
+    INNER JOIN libros ON autores.id = libros.autor_id 
+    WHERE autores.nombre = ?
+    """
+    )
+    # Ejecutamos la consulta
+    cursor.execute(consulta, (nombre_autor,))
+
+    # Obtenemos todos los resultados
+    resultados = cursor.fetchall()
+    # Devuelve los resultados 
+    if resultados:
+        return resultados
 
 def actualizar_libro(conexion, id_libro, nuevo_titulo=None, nuevo_anio=None):
     """
@@ -78,14 +150,37 @@ def actualizar_libro(conexion, id_libro, nuevo_titulo=None, nuevo_anio=None):
     """
     # Implementa la actualización usando SQL UPDATE
     # Solo actualiza los campos que no son None
-    pass
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    # Construimos por partes la consulta UPDATE - WHERE
+    consulta = ("UPDATE libros SET ")
+    var_updates = []
+    # Añadimos las diferentes partes de la consulta 
+    if nuevo_titulo is not None:
+        var_updates.append(f"titulo = '{nuevo_titulo}'")
+    if nuevo_anio is not None:
+        var_updates.append(f"anio = '{nuevo_anio}'")
+    if var_updates:
+        consulta += ", ".join(var_updates)
+        consulta += f"WHERE libros.id = '{id_libro}'"
+    # Ejecutamos la consulta    
+    cursor.execute(consulta)
+    # Confirmamos y guardamos los cambios
+    conexion.commit()
 
 def eliminar_libro(conexion, id_libro):
     """
     Elimina un libro por su ID
     """
     # Implementa la eliminación usando SQL DELETE
-    pass
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    # Construimos la consulta DELETE - WHERE
+    consulta = ("DELETE FROM libros WHERE libros.id = ?")
+    # Ejecutamos la consulta    
+    cursor.execute(consulta, (id_libro,))
+    # Confirmamos y guardamos los cambios
+    conexion.commit()
 
 def ejemplo_transaccion(conexion):
     """
@@ -96,7 +191,33 @@ def ejemplo_transaccion(conexion):
     # 2. Realice varias operaciones
     # 3. Si todo está bien, confirma con conexion.commit()
     # 4. En caso de error, revierte con conexion.rollback()
-    pass
+    
+    # Creamos un objeto cursor
+    cursor = conexion.cursor()
+    
+    # Iniciamos las operaciones 
+    try:
+        # Iniciamos una transacción para agrupar operaciones
+        conexion.execute('BEGIN TRANSACTION')
+        # Operaciones
+        cursor.execute("INSERT INTO autores (nombre) VALUES ('J.R.R. Tolkien')")
+        cursor.execute("INSERT INTO libros (titulo, anio, autor_id) VALUES ('El hobbit', 1937, 4)")
+        # Confirmamos la transacción
+        conexion.commit()
+    except sqlite3.Error as e:
+        # Revertimos las operaciones en caso de error
+        conexion.rollback()
+        print(f"Error en la transacción: {e}")
+
+    # Comprobamos el resultado de la transacción
+    cursor.execute("SELECT autores.nombre FROM autores ")
+    # Obtenemos los resultados
+    resultados = cursor.fetchall()
+    # Imprimimos los resultados formateados 
+    if resultados:
+        for fila in resultados:
+            autor = fila
+            print(f'Autor: {autor}')
 
 if __name__ == "__main__":
     try:
